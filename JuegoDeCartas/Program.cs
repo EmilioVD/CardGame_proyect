@@ -12,6 +12,8 @@ namespace JuegoDeCartas
         {
             Console.WriteLine("Hello World");
             Console.WriteLine("Hello World Juan");
+            Console.WriteLine("ah");
+
             Console.ReadKey();
         }
     }
