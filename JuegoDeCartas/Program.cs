@@ -10,7 +10,7 @@ namespace JuegoDeCartas
     {
         static void Main(string[] args)
         {
-           
+
         }
 
         public interface ICarta
