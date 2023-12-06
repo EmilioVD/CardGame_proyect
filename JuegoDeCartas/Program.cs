@@ -10,7 +10,31 @@ namespace JuegoDeCartas
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hola");
+            
+        }
+        public enum FigurasCartasEnum
+        {
+            Diamantes,
+            Espadas,
+            Treboles,
+            Corazones
+        }
+        public enum ValoresCartasEnum
+        {
+            As = 1,
+            Dos,
+            Tres,
+            Cuatro,
+            Cinco,
+            Seis,
+            Siete,
+            Ocho,
+            Nueve,
+            Diez,
+            Jota,
+            Reina,
+            Rey
         }
     }
 }
+
