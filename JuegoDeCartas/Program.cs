@@ -11,6 +11,8 @@ namespace JuegoDeCartas
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World");
+            Console.WriteLine("arriba el america");
+
             Console.ReadKey();
         }
     }
