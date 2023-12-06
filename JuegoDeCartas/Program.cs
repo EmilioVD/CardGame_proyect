@@ -11,6 +11,31 @@ namespace JuegoDeCartas
         static void Main(string[] args)
         {
 
+            
+        }
+      
+        public enum FigurasCartasEnum
+        {
+            Diamantes,
+            Espadas,
+            Treboles,
+            Corazones
+        }
+        public enum ValoresCartasEnum
+        {
+            As = 1,
+            Dos,
+            Tres,
+            Cuatro,
+            Cinco,
+            Seis,
+            Siete,
+            Ocho,
+            Nueve,
+            Diez,
+            Jota,
+            Reina,
+            Rey
         }
 
         public interface ICarta
@@ -60,3 +85,4 @@ namespace JuegoDeCartas
 
     }
 }
+
