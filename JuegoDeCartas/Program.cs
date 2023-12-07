@@ -10,8 +10,10 @@ namespace JuegoDeCartas
     {
         static void Main(string[] args)
         {
-
+          
         }
+
+
         public enum FigurasCartasEnum
         {
             Diamantes,
@@ -49,6 +51,7 @@ namespace JuegoDeCartas
             ICarta SacarCarta(int indiceCarta);
             void MeterCarta(ICarta carta);
             void MeterCarta(List<ICarta> cartas);
+
         }
 
         public interface IComparadorDeManos
@@ -254,3 +257,4 @@ namespace JuegoDeCartas
 
     }
 }
+
