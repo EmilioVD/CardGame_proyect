@@ -10,8 +10,64 @@ namespace JuegoDeCartas
     {
         static void Main(string[] args)
         {
-          
+            Console.WriteLine("Bienvenido al programa de cartas");
+
+        // Menú para seleccionar el juego
+        Console.WriteLine("Seleccione el juego:");
+        Console.WriteLine("1. Blackjack");
+        Console.WriteLine("2. Poker");
+        int opcionJuego = int.Parse(Console.ReadLine());
+
+        // Menú para ingresar el número de jugadores
+        Console.Write("Ingrese el número de jugadores: ");
+        int numJugadores = int.Parse(Console.ReadLine());
+
+        IDeckDeCartas deck = new DeckDeCartas(opcionJuego);
+        IComparadorDeManos comparador;
+
+        // Seleccionar comparador según el juego
+        if (opcionJuego == 1)
+        {
+            comparador = new ComparadorDeManosBlackjack();
         }
+        else
+        {
+            comparador = new ComparadorDeManosPoker();
+        }
+
+            // Crear jugadores
+            List<IJugador> jugadores = new List<IJugador>();
+            for (int i = 0; i < numJugadores; i++)
+            {
+                jugadores.Add(new Jugador());
+            }
+
+            // Crear dealer
+            IDealer dealer = new Dealer(deck);
+
+            // Inicializar el juego
+            dealer.BarajearDeck();
+            Console.WriteLine("Comienza el juego...");
+
+            // Repartir cartas a los jugadores
+            foreach (var jugador in jugadores)
+            {
+                jugador.ObtenerCartas().AddRange(dealer.RepartirCartas(2));
+            }
+
+            // Repartir cartas al dealer
+            List<ICarta> manoDealer = dealer.RepartirCartas(2);
+
+            // Mostrar cartas de los jugadores y una carta del dealer
+            foreach (var jugador in jugadores)
+            {
+                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.ObtenerCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+            }
+            Console.WriteLine($"Carta visible del Dealer: {manoDealer[0].Figura} {manoDealer[0].Valor}");
+
+            Console.WriteLine("Fin del juego. ¡Gracias por jugar!");
+        }
+    }
 
 
         public enum FigurasCartasEnum
@@ -45,14 +101,19 @@ namespace JuegoDeCartas
         }
 
         public interface IDeckDeCartas
+
         {
+            
             void BarajearDeck();
             ICarta VerCarta(int indiceCarta);
             ICarta SacarCarta(int indiceCarta);
             void MeterCarta(ICarta carta);
             void MeterCarta(List<ICarta> cartas);
 
-        }
+            void InicializarDeck(int tipoJuego);
+
+
+    }
 
         public interface IComparadorDeManos
         {
@@ -83,8 +144,64 @@ namespace JuegoDeCartas
             List<ICarta> MostrarCartas();
             ICarta MostrarCarta(int indiceCarta);
         }
+    public class Jugador : IJugador
+    {
+        private List<ICarta> mano;
 
-        public class Carta : ICarta
+        public Jugador()
+        {
+            mano = new List<ICarta>();
+        }
+
+       
+
+        public List<ICarta> ObtenerCartas()
+        {
+            return mano;
+        }
+        public void RealizarJugada()
+        {
+            // Implementa la lógica de la jugada del jugador si es necesario
+        }
+
+        public void ObtenerCartas(List<ICarta> cartas)
+        {
+            mano.AddRange(cartas);
+        }
+
+        public ICarta DevolverCarta(int indiceCarta)
+        {
+            ICarta carta = mano[indiceCarta];
+            mano.RemoveAt(indiceCarta);
+            return carta;
+        }
+
+        public List<ICarta> DevolverTodasLasCartas()
+        {
+            List<ICarta> todasLasCartas = new List<ICarta>(mano);
+            mano.Clear();
+            return todasLasCartas;
+        }
+
+        public List<ICarta> MostrarCartas()
+        {
+            return new List<ICarta>(mano);
+        }
+
+        public ICarta MostrarCarta(int indiceCarta)
+        {
+            return mano[indiceCarta];
+        }
+
+        public List<ICarta> ObtenerMano()
+        {
+            return mano;
+        }
+    }
+
+
+
+    public class Carta : ICarta
         {
             public FigurasCartasEnum Figura { get; }
             public ValoresCartasEnum Valor { get; }
@@ -118,7 +235,28 @@ namespace JuegoDeCartas
 
             }
 
-            public void BarajearDeck()
+        public DeckDeCartas(int tipoJuego)
+        {
+            deck = new List<ICarta>();
+            InicializarDeck(tipoJuego);
+        }
+
+        public void InicializarDeck(int tipoJuego)
+        {
+            switch (tipoJuego)
+            {
+                case 1: // Blackjack
+                    InicializarDeckBlackjack();
+                    break;
+                case 2: // Poker 
+                    InicializarDeckPoker();
+                    break;
+                default:
+                    throw new ArgumentException("Tipo de juego no válido");
+            }
+        }
+
+        public void BarajearDeck()
             {
                 var random = new Random();
                 deck = deck.OrderBy(card => random.Next()).ToList();
@@ -256,5 +394,5 @@ namespace JuegoDeCartas
         }
 
     }
-}
+
 
