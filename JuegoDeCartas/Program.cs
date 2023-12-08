@@ -25,15 +25,17 @@ namespace JuegoDeCartas
         IDeckDeCartas deck = new DeckDeCartas(opcionJuego);
         IComparadorDeManos comparador;
 
-        // Seleccionar comparador según el juego
-        if (opcionJuego == 1)
-        {
-            comparador = new ComparadorDeManosBlackjack();
-        }
-        else
-        {
-            comparador = new ComparadorDeManosPoker();
-        }
+            switch (opcionJuego)
+            {
+                case 1:
+                comparador = new ComparadorDeManosBlackjack();
+                break;
+
+                case 2:
+                comparador = new ComparadorDeManosPoker();
+                break;
+
+            }
 
             // Crear jugadores
             List<IJugador> jugadores = new List<IJugador>();
@@ -41,31 +43,33 @@ namespace JuegoDeCartas
             {
                 jugadores.Add(new Jugador());
             }
+         
+            foreach (var jugador in jugadores)
+            {
+                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+            }
 
             // Crear dealer
             IDealer dealer = new Dealer(deck);
 
-            // Inicializar el juego
+        
             dealer.BarajearDeck();
             Console.WriteLine("Comienza el juego...");
 
-            // Repartir cartas a los jugadores
-            foreach (var jugador in jugadores)
-            {
-                jugador.ObtenerCartas().AddRange(dealer.RepartirCartas(2));
-            }
+            
 
-            // Repartir cartas al dealer
+            // cartas al dealer
             List<ICarta> manoDealer = dealer.RepartirCartas(2);
 
-            // Mostrar cartas de los jugadores y una carta del dealer
+            
             foreach (var jugador in jugadores)
             {
-                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.ObtenerCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
             }
             Console.WriteLine($"Carta visible del Dealer: {manoDealer[0].Figura} {manoDealer[0].Valor}");
 
             Console.WriteLine("Fin del juego. ¡Gracias por jugar!");
+            Console.ReadKey();
         }
     }
 
@@ -143,6 +147,8 @@ namespace JuegoDeCartas
             List<ICarta> DevolverTodasLasCartas();
             List<ICarta> MostrarCartas();
             ICarta MostrarCarta(int indiceCarta);
+
+            List<ICarta> ObtenerMano();
         }
     public class Jugador : IJugador
     {
@@ -161,7 +167,7 @@ namespace JuegoDeCartas
         }
         public void RealizarJugada()
         {
-            // Implementa la lógica de la jugada del jugador si es necesario
+            // Implementar logica
         }
 
         public void ObtenerCartas(List<ICarta> cartas)
