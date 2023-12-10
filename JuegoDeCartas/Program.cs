@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JuegoDeCartas.Interfaces;
+using JuegoDeCartas.Enumeradores;
 
 
 namespace JuegoDeCartas
@@ -60,81 +62,6 @@ namespace JuegoDeCartas
         }
 
 
-
-        public enum FigurasCartasEnum
-        {
-            Diamantes,
-            Espadas,
-            Treboles,
-            Corazones
-        }
-        public enum ValoresCartasEnum
-        {
-            As = 1,
-            Dos,
-            Tres,
-            Cuatro,
-            Cinco,
-            Seis,
-            Siete,
-            Ocho,
-            Nueve,
-            Diez,
-            Jota,
-            Reina,
-            Rey
-        }
-
-        public interface ICarta
-        {
-            FigurasCartasEnum Figura { get; }
-            ValoresCartasEnum Valor { get; }
-        }
-
-        public interface IDeckDeCartas
-
-        {
-
-            void BarajearDeck();
-            ICarta VerCarta(int indiceCarta);
-            ICarta SacarCarta(int indiceCarta);
-            void MeterCarta(ICarta carta);
-            void MeterCarta(List<ICarta> cartas);
-
-            void InicializarDeck(int tipoJuego);
-
-
-        }
-
-        public interface IDealer
-        {
-            List<ICarta> RepartirCartas(int numeroDeCartas);
-            void RecogerCartas(List<ICarta> cartas);
-            void BarajearDeck();
-        }
-
-        public interface IJuego
-        {
-            IDealer Dealer { get; }
-            bool JuegoTerminado { get; }
-            void AgregarJugador(IJugador jugador);
-            void IniciarJuego();
-            void JugarRonda();
-            void MostrarGanador();
-        }
-
-        public interface IJugador
-        {
-            void RealizarJugada();
-            void ObtenerCartas(List<ICarta> cartas);
-            ICarta DevolverCarta(int indiceCarta);
-            List<ICarta> DevolverTodasLasCartas();
-            List<ICarta> MostrarCartas();
-            ICarta MostrarCarta(int indiceCarta);
-
-            List<ICarta> ObtenerMano();
-        } 
-       
         
         public class Jugador : IJugador
         {

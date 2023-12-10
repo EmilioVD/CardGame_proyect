@@ -43,6 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enumeradores\FigurasCartasEnum.cs" />
+    <Compile Include="Enumeradores\VaolresCartasEnum.cs" />
+    <Compile Include="Interfaces\ICarta.cs" />
+    <Compile Include="Interfaces\IDealer.cs" />
+    <Compile Include="Interfaces\IDeckDeCartas.cs" />
+    <Compile Include="Interfaces\IJuego.cs" />
+    <Compile Include="Interfaces\IJugador.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
