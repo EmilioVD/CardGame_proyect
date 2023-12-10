@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JuegoDeCartas.Enumeradores;
+using JuegoDeCartas.Interfaces;
 
 namespace JuegoDeCartas
 {
@@ -60,7 +62,7 @@ namespace JuegoDeCartas
 
 
 
-        public enum FigurasCartasEnum
+      /*  public enum FigurasCartasEnum
         {
             Diamantes,
             Espadas,
@@ -132,7 +134,9 @@ namespace JuegoDeCartas
             ICarta MostrarCarta(int indiceCarta);
 
             List<ICarta> ObtenerMano();
-        }
+        } */
+       
+        
         public class Jugador : IJugador
         {
 
