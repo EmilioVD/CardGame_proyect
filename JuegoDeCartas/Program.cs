@@ -10,6 +10,7 @@ namespace JuegoDeCartas
     {
         static void Main(string[] args)
         {
+
             Console.WriteLine("Bienvenido al programa de cartas");
 
             // Menú para seleccionar el juego
@@ -36,12 +37,9 @@ namespace JuegoDeCartas
                 Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
             }
 
-            IDeckDeCartas deck = null;
             // Crear dealer
             IDealer dealer = new Dealer(deck);
 
-
-            dealer.BarajearDeck();
             Console.WriteLine("Comienza el juego...");
 
 
@@ -137,57 +135,12 @@ namespace JuegoDeCartas
         }
         public class Jugador : IJugador
         {
-            private List<ICarta> mano;
 
-            public Jugador()
-            {
-                mano = new List<ICarta>();
-            }
+          
+        }
+        public class Juego : IJuego
+        {
 
-
-
-            public List<ICarta> ObtenerCartas()
-            {
-                return mano;
-            }
-            public void RealizarJugada()
-            {
-                // Implementar logica
-            }
-
-            public void ObtenerCartas(List<ICarta> cartas)
-            {
-                mano.AddRange(cartas);
-            }
-
-            public ICarta DevolverCarta(int indiceCarta)
-            {
-                ICarta carta = mano[indiceCarta];
-                mano.RemoveAt(indiceCarta);
-                return carta;
-            }
-
-            public List<ICarta> DevolverTodasLasCartas()
-            {
-                List<ICarta> todasLasCartas = new List<ICarta>(mano);
-                mano.Clear();
-                return todasLasCartas;
-            }
-
-            public List<ICarta> MostrarCartas()
-            {
-                return new List<ICarta>(mano);
-            }
-
-            public ICarta MostrarCarta(int indiceCarta)
-            {
-                return mano[indiceCarta];
-            }
-
-            public List<ICarta> ObtenerMano()
-            {
-                return mano;
-            }
         }
 
 
@@ -302,32 +255,75 @@ namespace JuegoDeCartas
 
         public class Dealer : IDealer
         {
-            private IDeckDeCartas deck;
-            public Dealer(IDeckDeCartas deck)
+            private List<ICarta> deck;
+
+            public Dealer()
             {
-                this.deck = deck;
+                deck = new List<ICarta>();
             }
+
             public List<ICarta> RepartirCartas(int numeroDeCartas)
             {
                 List<ICarta> cartasRepartidas = new List<ICarta>();
-                for (int i = 0; i < numeroDeCartas; i++) 
+                for (int i = 0; i < numeroDeCartas; i++)
                 {
-                    cartasRepartidas.Add(deck.SacarCarta(0));
+                    if (deck.Count > 0)
+                    {
+                        cartasRepartidas.Add(deck[0]);
+                        deck.RemoveAt(0);
+                    }
                 }
                 return cartasRepartidas;
             }
 
             public void RecogerCartas(List<ICarta> cartas)
             {
-                deck.MeterCarta(cartas);
+                deck.AddRange(cartas);
             }
 
             public void BarajearDeck()
             {
-                deck.BarajearDeck();
+                var random = new Random();
+                deck = deck.OrderBy(card => random.Next()).ToList();
             }
 
+            public void JugarBlackjack()
+            {
+                while (CalcularPuntuacion() < 17)
+                {
+                    TomarCarta();
+                }
+            }
+
+            private void TomarCarta()
+            {
+                List<ICarta> cartasRepartidas = RepartirCartas(1);
+                Console.WriteLine($"El Dealer toma una carta: {cartasRepartidas[0].Valor} de {cartasRepartidas[0].Figura}");
+            }
+
+            private int CalcularPuntuacion()
+            {
+                int puntuacion = 0;
+                foreach (var carta in deck)
+                {
+                    puntuacion += (int)carta.Valor;
+                }
+
+                // Ajustar la puntuación por los Ases
+                foreach (var carta in deck.Where(c => c.Valor == ValoresCartasEnum.As))
+                {
+                    if (puntuacion + 10 <= 21)
+                    {
+                        puntuacion += 10;
+                    }
+                }
+
+                return puntuacion;
+            }
         }
+
+
+
     }
 
 }
