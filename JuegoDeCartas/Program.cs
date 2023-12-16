@@ -459,16 +459,17 @@ namespace JuegoDeCartas
                     deck = deck.OrderBy(card => random.Next()).ToList();
                 }
 
-                public void jugar(List<IJugador> jugadores )
+                public void jugar(List<IJugador> jugadores ) //Desta forma el dealer puede mover las cartas entre jugadores 
                 {
-                    Console.WriteLine("urno del Dealer");
+                    Console.WriteLine("Turno del Dealer");
                     RepartirCartasIniciales(jugadores);
                     var cartasUsadas = new List<ICarta>();
                     foreach (var jugador in jugadores )
                     {
-                        int cartasADevolver = jugador.MostrarCartas().Count;
-                        jugador.ObtenerCartas(RepartirCartas(cartasADevolver));
+                        cartasUsadas.AddRange(jugador.DevolverTodasLasCartas());
                     }
+                    RecogerCartas(cartasUsadas);
+                    BarajearDeck();
                 }
 
                 private void RepartirCartasIniciales(List<IJugador> jugadores)
