@@ -214,6 +214,65 @@ namespace JuegoDeCartas
         }
         public class Juego : IJuego
         {
+
+            private List<IJugador> jugadores;
+            private IDealer dealer;
+            private IDeckDeCartas deck;
+
+            public Juego(IDealer dealer, IDeckDeCartas deck)
+            {
+                this.jugadores = new List<IJugador>();
+                this.dealer = dealer;
+                this.deck = deck;
+            }
+
+            public IDealer Dealer => dealer;
+            public bool JuegoTerminado { get; private set; }
+
+            public void AgregarJugador(IJugador jugador)
+            {
+                jugadores.Add(jugador);
+            }
+
+            public void IniciarJuego()
+            {
+                // implementar logica
+            }
+
+            public void JugarRonda()
+            {
+                // implementar logica
+            }
+
+            public void MostrarGanador()
+            {
+                // implementar logica
+            }
+            public static void MostrarEstado(List<IJugador> jugadores)
+            {
+                Console.WriteLine("Estado del juego:");
+
+
+                for (int i = 0; i < jugadores.Count; i++)
+                {
+                    Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+                }
+
+
+            }
+
+            public static void MostrarManosFinales(List<IJugador> jugadores)
+            {
+                Console.WriteLine("Manos finales:");
+
+
+                for (int i = 0; i < jugadores.Count; i++)
+                {
+                    Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+                }
+
+
+            }
         }
 
 
