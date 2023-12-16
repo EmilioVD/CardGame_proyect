@@ -35,9 +35,20 @@ namespace JuegoDeCartas
                 jugadores.Add(new Jugador());
             }
 
+           
+
+            // Agregar jugadores al juego
+            IJuego juego = new Juego(new Dealer(), new DeckDeCartas());
             foreach (var jugador in jugadores)
             {
-                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+                juego.AgregarJugador(jugador);
+            }
+
+            // Enumerar jugadores
+            Console.WriteLine("Jugadores en la partida:");
+            for (int i = 0; i < jugadores.Count; i++)
+            {
+                Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
             }
 
             // Crear dealer
@@ -51,16 +62,21 @@ namespace JuegoDeCartas
 
             // Repartir cartas iniciales
             RepartirCartasIniciales(jugadores, dealer, deck);
-
-            // Mostrar estado inicial
-            MostrarEstado(jugadores);
+            Juego.MostrarEstado(jugadores);
 
             // Jugadores devuelven cartas y reciben nuevas
             foreach (var jugador in jugadores)
             {
                 DevolverYRecibirCartas(jugador, deck);
-                MostrarEstado(jugadores);
+                Juego.MostrarEstado(jugadores);
             }
+
+            // Mostrar manos finales y determinar ganador
+            Juego.MostrarManosFinales(jugadores);
+            DeterminarGanador(jugadores);
+
+            Console.WriteLine("Fin del juego. ¡Gracias por jugar!");
+            Console.ReadKey();
 
             // Mostrar manos finales y determinar ganador
             MostrarManosFinales(jugadores);
@@ -86,10 +102,10 @@ namespace JuegoDeCartas
 
         static void DevolverYRecibirCartas(IJugador jugador, IDeckDeCartas deck)
         {
-            // Jugador devuelve todas las cartas
+            
             List<ICarta> cartasDevueltas = jugador.DevolverTodasLasCartas();
 
-            // Devolver cartas al mazo
+            
             foreach (var cartaDevuelta in cartasDevueltas)
             {
                 deck.MeterCarta(cartaDevuelta);
@@ -99,7 +115,7 @@ namespace JuegoDeCartas
             List<ICarta> nuevasCartas = new List<ICarta>();
             foreach (var cartaDevuelta in cartasDevueltas)
             {
-                nuevasCartas.Add(deck.SacarCarta(0));  // Suponemos que el índice 0 es la parte superior del mazo
+                nuevasCartas.Add(deck.SacarCarta(0));  
             }
             jugador.ObtenerCartas(nuevasCartas);
 
@@ -107,7 +123,7 @@ namespace JuegoDeCartas
 
         static void MostrarEstado(List<IJugador> jugadores)
         {
-            // Mostrar el estado actual del juego, incluyendo las manos de los jugadores
+            // Mostrar el estado actual del juego
             foreach (var jugador in jugadores)
             {
                 Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
@@ -130,20 +146,74 @@ namespace JuegoDeCartas
 
         static void DeterminarGanador(List<IJugador> jugadores)
         {
-           
-            
-           
+
+            // implementar logica
+
         }
 
 
         public class Jugador : IJugador
         {
+            private List<ICarta> mano;
 
-          
+            public Jugador()
+            {
+                mano = new List<ICarta>();
+            }
+
+            public void RealizarJugada()
+            {
+                // implementar logica
+
+            }
+
+            public void ObtenerCartas(List<ICarta> cartas)
+            {
+                mano.AddRange(cartas);
+            }
+
+            public ICarta DevolverCarta(int indiceCarta)
+            {
+                if (indiceCarta >= 0 && indiceCarta < mano.Count)
+                {
+                    ICarta cartaDevuelta = mano[indiceCarta];
+                    mano.RemoveAt(indiceCarta);
+                    return cartaDevuelta;
+                }
+                return null; 
+            }
+
+            public List<ICarta> DevolverTodasLasCartas()
+            {
+                List<ICarta> cartasDevueltas = new List<ICarta>(mano);
+                mano.Clear();
+                return cartasDevueltas;
+            }
+
+            public List<ICarta> MostrarCartas()
+            {
+                return new List<ICarta>(mano);
+            }
+
+            public ICarta MostrarCarta(int indiceCarta)
+            {
+                if (indiceCarta >= 0 && indiceCarta < mano.Count)
+                {
+                    return mano[indiceCarta];
+                }
+                return null;
+            }
+
+            public List<ICarta> ObtenerMano()
+            {
+                return new List<ICarta>(mano);
+            }
+
+
+
         }
         public class Juego : IJuego
         {
-
         }
 
 
