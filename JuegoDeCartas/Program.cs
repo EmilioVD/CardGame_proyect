@@ -41,28 +41,101 @@ namespace JuegoDeCartas
             }
 
             // Crear dealer
-            IDealer dealer = new Dealer(deck);
+            IDealer dealer = new Dealer();
 
             Console.WriteLine("Comienza el juego...");
 
+            // Crear el deck según el tipo de juego seleccionado
+            IDeckDeCartas deck = new DeckDeCartas(opcionJuego);
+            deck.BarajearDeck();
 
+            // Repartir cartas iniciales
+            RepartirCartasIniciales(jugadores, dealer, deck);
 
-            // cartas al dealer
-            List<ICarta> manoDealer = dealer.RepartirCartas(2);
+            // Mostrar estado inicial
+            MostrarEstado(jugadores);
 
-
+            // Jugadores devuelven cartas y reciben nuevas
             foreach (var jugador in jugadores)
             {
-                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+                DevolverYRecibirCartas(jugador, deck);
+                MostrarEstado(jugadores);
             }
-            Console.WriteLine($"Carta visible del Dealer: {manoDealer[0].Figura} {manoDealer[0].Valor}");
+
+            // Mostrar manos finales y determinar ganador
+            MostrarManosFinales(jugadores);
+            DeterminarGanador(jugadores);
 
             Console.WriteLine("Fin del juego. ¡Gracias por jugar!");
             Console.ReadKey();
         }
+        static void RepartirCartasIniciales(List<IJugador> jugadores, IDealer dealer, IDeckDeCartas deck)
+        {
+            // Repartir cinco cartas a cada jugador y al dealer
+            for (int i = 0; i < 5; i++)
+            {
+                foreach (var jugador in jugadores)
+                {
+                    jugador.ObtenerCartas(new List<ICarta> { deck.SacarCarta(0) });
+                }
 
-
+                dealer.RecogerCartas(new List<ICarta> { deck.SacarCarta(0) });
+            }
+        }
         
+
+        static void DevolverYRecibirCartas(IJugador jugador, IDeckDeCartas deck)
+        {
+            // Jugador devuelve todas las cartas
+            List<ICarta> cartasDevueltas = jugador.DevolverTodasLasCartas();
+
+            // Devolver cartas al mazo
+            foreach (var cartaDevuelta in cartasDevueltas)
+            {
+                deck.MeterCarta(cartaDevuelta);
+            }
+
+            // Dealer da nuevas cartas al jugador
+            List<ICarta> nuevasCartas = new List<ICarta>();
+            foreach (var cartaDevuelta in cartasDevueltas)
+            {
+                nuevasCartas.Add(deck.SacarCarta(0));  // Suponemos que el índice 0 es la parte superior del mazo
+            }
+            jugador.ObtenerCartas(nuevasCartas);
+
+        }
+
+        static void MostrarEstado(List<IJugador> jugadores)
+        {
+            // Mostrar el estado actual del juego, incluyendo las manos de los jugadores
+            foreach (var jugador in jugadores)
+            {
+                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+            }
+
+            Console.WriteLine();
+        }
+
+        static void MostrarManosFinales(List<IJugador> jugadores)
+        {
+            // Mostrar las manos finales de todos los jugadores al final de la ronda
+            Console.WriteLine("Manos Finales:");
+            foreach (var jugador in jugadores)
+            {
+                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+            }
+
+            Console.WriteLine();
+        }
+
+        static void DeterminarGanador(List<IJugador> jugadores)
+        {
+           
+            
+           
+        }
+
+
         public class Jugador : IJugador
         {
 
