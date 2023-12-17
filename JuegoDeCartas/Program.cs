@@ -37,12 +37,16 @@ namespace JuegoDeCartas
             }
 
 
+            // Crear el dealer según el juego seleccionado
+            IDealer dealer = (opcionJuego == 1) ? (IDealer)new DealerBlackJack() : (IDealer)new DealerPokerClasico();
+
             // Agregar jugadores al juego
-            IJuego juego = new Juego(new Dealer(), new DeckDeCartas());
+            IJuego juego = (opcionJuego == 1) ? (IJuego)new Juego(dealer, new DeckDeCartas(opcionJuego)) : (IJuego)new JuegoDePoker(dealer, new DeckDeCartas(opcionJuego));
             foreach (var jugador in jugadores)
             {
                 juego.AgregarJugador(jugador);
             }
+
             // Enumerar jugadores
             Console.WriteLine("Jugadores en la partida:");
             for (int i = 0; i < jugadores.Count; i++)
@@ -50,8 +54,7 @@ namespace JuegoDeCartas
                 Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
             }
 
-            // Crear dealer
-            IDealer dealer = new Dealer();
+          
 
             Console.WriteLine("Comienza el juego...");
             // Crear el deck según el tipo de juego seleccionado
