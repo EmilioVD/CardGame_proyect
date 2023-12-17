@@ -277,12 +277,27 @@ namespace JuegoDeCartas
 
 
         }
+
+
         public class JuegoDePoker : IJuego
         { 
 
             private List<IJugador> jugadores;
-            private IDealer dealer;
             private IDeckDeCartas deck;
+            public bool JuegoTerminado { get; private set; } = false;
+
+            private IDealer dealer;
+
+            public IDealer GetDealer()
+            {
+                return dealer;
+            }
+
+            private void SetDealer(IDealer value)
+            {
+                dealer = value;
+            }
+
             private enum ManoEnum
             {
                 CartaAlta = 1,
@@ -319,14 +334,30 @@ namespace JuegoDeCartas
             {
                 jugadores.Add(jugador);
             }
-            public void InciciarJuego()
+
+            public void IniciarJuego()
             {
                 foreach (var jugador in jugadores)
                 {
                     List<ICarta> cartas = dealer.RepartirCartas(5);
                     jugador.ObtenerCartas(cartas);
                 }
-                MostrarGanador();
+                
+            }
+
+            public void JugarRonda()
+            {
+                foreach (var jugador in jugadores)
+                {
+                    jugador.RealizarJugada();
+                }
+
+                foreach (var jugador in jugadores) //Se muestra las cartas de los jugadores
+                {
+                    jugador.MostrarCartas();
+                }
+
+                MostrarGanador(); //Muestro el ganador 
             }
 
             public void MostrarGanador()

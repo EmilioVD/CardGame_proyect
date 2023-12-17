@@ -8,7 +8,8 @@ namespace JuegoDeCartas.Interfaces
 {
     public interface IJuego
     {
-        IDealer Dealer { get; }
+        IDealer GetDealer();
+
         bool JuegoTerminado { get; }
         void AgregarJugador(IJugador jugador);
         void IniciarJuego();
