@@ -14,7 +14,6 @@ namespace JuegoDeCartas
     {
         static void Main(string[] args)
         {
-
             Console.WriteLine("Bienvenido al programa de cartas");
 
             // Menú para seleccionar el juego
@@ -27,8 +26,6 @@ namespace JuegoDeCartas
             Console.Write("Ingrese el número de jugadores: ");
             int numJugadores = int.Parse(Console.ReadLine());
 
-
-
             // Crear jugadores
             List<IJugador> jugadores = new List<IJugador>();
             for (int i = 0; i < numJugadores; i++)
@@ -36,50 +33,47 @@ namespace JuegoDeCartas
                 jugadores.Add(new Jugador());
             }
 
+            // Crear el dealer y el juego según el juego seleccionado
+            IDealer dealer;
+            IJuego juego;
 
-            // Crear el dealer según el juego seleccionado
-            IDealer dealer = (opcionJuego == 1) ? (IDealer)new DealerBlackJack() : (IDealer)new DealerPokerClasico();
+            switch (opcionJuego)
+            {
+                case 1:
+                    dealer = new DealerBlackJack();
+                    juego = new JuegodeBlackJack(dealer, new DeckDeCartas(opcionJuego));
+                    break;
+
+                case 2:
+                    dealer = new DealerPokerClasico();
+                    juego = new JuegoDePoker(dealer, new DeckDeCartas(opcionJuego));
+                    break;
+
+                default:
+                    Console.WriteLine("Opción de juego no válida.");
+                    return;
+            }
 
             // Agregar jugadores al juego
-            IJuego juego = (opcionJuego == 1) ? (IJuego)new Juego(dealer, new DeckDeCartas(opcionJuego)) : (IJuego)new JuegoDePoker(dealer, new DeckDeCartas(opcionJuego));
             foreach (var jugador in jugadores)
             {
                 juego.AgregarJugador(jugador);
             }
 
-            // Enumerar jugadores
-            Console.WriteLine("Jugadores en la partida:");
-            for (int i = 0; i < jugadores.Count; i++)
-            {
-                Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
-            }
+            // Iniciar el juego
+            juego.IniciarJuego();
 
-          
+            // Jugar una ronda
+            juego.JugarRonda();
 
-            Console.WriteLine("Comienza el juego...");
-            // Crear el deck según el tipo de juego seleccionado
-            IDeckDeCartas deck = new DeckDeCartas(opcionJuego);
-            deck.BarajearDeck();
-
-            // Repartir cartas iniciales
-            RepartirCartasIniciales(jugadores, dealer, deck);
-
-            // Mostrar estado inicial
-            Juego.MostrarEstado(jugadores);
-
-            // Jugadores devuelven cartas y reciben nuevas
-            foreach (var jugador in jugadores)
-            {
-                DevolverYRecibirCartas(jugador, deck);
-                Juego.MostrarEstado(jugadores);
-            }
-            // Mostrar manos finales y determinar ganador
-            Juego.MostrarManosFinales(jugadores);
-            DeterminarGanador(jugadores);
+            // Mostrar ganador
+            juego.MostrarGanador();
 
             Console.WriteLine("Fin del juego. ¡Gracias por jugar!");
             Console.ReadKey();
         }
+
+    }
         static void RepartirCartasIniciales(List<IJugador> jugadores, IDealer dealer, IDeckDeCartas deck)
         {
             // Repartir cinco cartas a cada jugador y al dealer
@@ -200,7 +194,7 @@ namespace JuegoDeCartas
 
         }
 
-
+        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public class JuegoDePoker : IJuego
         { 
 
