@@ -73,7 +73,7 @@ namespace JuegoDeCartas
             Console.ReadKey();
         }
 
-    }
+    
         static void RepartirCartasIniciales(List<IJugador> jugadores, IDealer dealer, IDeckDeCartas deck)
         {
             // Repartir cinco cartas a cada jugador y al dealer
