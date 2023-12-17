@@ -131,6 +131,80 @@ namespace JuegoDeCartas
         static void DeterminarGanador(List<IJugador> jugadores)
         {
 
+            /*foreach (var jugador in jugadores)
+            {
+                Console.WriteLine($"Puntuación del Jugador {jugadores.IndexOf(jugador) + 1}: {CalcularPuntuacion(jugador.MostrarCartas())}");
+            }
+
+            var ganadores = EncontrarGanadores(jugadores);
+
+            if (ganadores.Count == 1)
+            {
+                Console.WriteLine($"El Jugador {jugadores.IndexOf(ganadores[0]) + 1} es el ganador.");
+            }
+            else
+            {
+                Console.WriteLine("Es un empate.");
+            }
+        }
+
+        static List<IJugador> EncontrarGanadores(List<IJugador> jugadores)
+        {
+            List<IJugador> ganadores = new List<IJugador>();
+            int mejorPuntuacion = 0;
+
+            foreach (var jugador in jugadores)
+            {
+                int puntuacion = CalcularPuntuacion(jugador.MostrarCartas());
+                if (puntuacion <= 21 && puntuacion > mejorPuntuacion)
+                {
+                    mejorPuntuacion = puntuacion;
+                    ganadores.Clear();
+                    ganadores.Add(jugador);
+                }
+                else if (puntuacion == mejorPuntuacion)
+                {
+                    ganadores.Add(jugador);
+                }
+            }
+
+            return ganadores;
+        }
+
+        static int CalcularPuntuacion(List<ICarta> mano)
+        {
+            int puntuacion = 0;
+            int ases = 0;
+
+            foreach (var carta in mano)
+            {
+                if (carta.Valor == ValoresCartasEnum.As)
+                {
+                    ases++;
+                    puntuacion += 1; // Valor inicial del As
+                }
+                else if (carta.Valor > ValoresCartasEnum.Nueve)
+                {
+                    puntuacion += 10; // Valor de las cartas 10, J, Q, K
+                }
+                else
+                {
+                    puntuacion += (int)carta.Valor;
+                }
+            }
+
+            // Ajustar la puntuación por los Ases
+            for (int i = 0; i < ases; i++)
+            {
+                if (puntuacion + 10 <= 21)
+                {
+                    puntuacion += 10;
+                }
+            }
+
+            return puntuacion;
+            */
+
 
 
         }
@@ -138,12 +212,123 @@ namespace JuegoDeCartas
 
         public class Jugador : IJugador
         {
+            private List<ICarta> mano;
+
+            public Jugador()
+            {
+                mano = new List<ICarta>();
+            }
+
+            public void RealizarJugada()
+            {
+                // implementar logica
+
+            }
+
+            public void ObtenerCartas(List<ICarta> cartas)
+            {
+                mano.AddRange(cartas);
+            }
+
+            public ICarta DevolverCarta(int indiceCarta)
+            {
+                if (indiceCarta >= 0 && indiceCarta < mano.Count)
+                {
+                    ICarta cartaDevuelta = mano[indiceCarta];
+                    mano.RemoveAt(indiceCarta);
+                    return cartaDevuelta;
+                }
+                return null;
+            }
+
+            public List<ICarta> DevolverTodasLasCartas()
+            {
+                List<ICarta> cartasDevueltas = new List<ICarta>(mano);
+                mano.Clear();
+                return cartasDevueltas;
+            }
+
+            public List<ICarta> MostrarCartas()
+            {
+                return new List<ICarta>(mano);
+            }
+
+            public ICarta MostrarCarta(int indiceCarta)
+            {
+                if (indiceCarta >= 0 && indiceCarta < mano.Count)
+                {
+                    return mano[indiceCarta];
+                }
+                return null;
+            }
+
+            public List<ICarta> ObtenerMano()
+            {
+                return new List<ICarta>(mano);
+            }
 
 
         }
         public class Juego : IJuego
         {
+            private List<IJugador> jugadores;
+            private IDealer dealer;
+            private IDeckDeCartas deck;
 
+            public Juego(IDealer dealer, IDeckDeCartas deck)
+            {
+                this.jugadores = new List<IJugador>();
+                this.dealer = dealer;
+                this.deck = deck;
+            }
+
+            public IDealer Dealer => dealer;
+            public bool JuegoTerminado { get; private set; }
+
+            public void AgregarJugador(IJugador jugador)
+            {
+                jugadores.Add(jugador);
+            }
+
+            public void IniciarJuego()
+            {
+                // implementar logica
+            }
+
+            public void JugarRonda()
+            {
+                // implementar logica
+            }
+
+            public void MostrarGanador()
+            {
+                // implementar logica
+            }
+            public static void MostrarEstado(List<IJugador> jugadores)
+            {
+                Console.WriteLine("Estado del juego:");
+
+
+                for (int i = 0; i < jugadores.Count; i++)
+                {
+                    Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+                }
+
+
+            }
+
+            public static void MostrarManosFinales(List<IJugador> jugadores)
+            {
+                Console.WriteLine("Manos finales:");
+
+
+                for (int i = 0; i < jugadores.Count; i++)
+                {
+                    Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+                }
+
+
+            }
         }
 
 
