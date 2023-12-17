@@ -421,29 +421,6 @@ namespace JuegoDeCartas
                 return resultadoDeLaMano;
             }
 
-            private List<ICarta> MoverAsAlPrincipio(List<ICarta> cartas)
-            {
-                var cartasOrdenadas = cartas.OrderByDescending(c => c.Valor).ToList();
-                var listaDeAses = new List<ICarta>();
-                var listaSinAses = new List<ICarta>();
-
-                for (int i = 0; i<= cartasOrdenadas.Count -1; i++)
-                {
-                    if (cartasOrdenadas[i].Valor == ValoresCartasEnum.As)
-                    {
-                        listaDeAses.Add(cartasOrdenadas[i]);
-                    }
-                    else
-                    {
-                        listaSinAses.Add(cartasOrdenadas[i]);
-                    }
-                }
-
-                var listaFinal = listaDeAses.Concat(listaDeAses).ToList();
-
-                return listaFinal;
-            }
-
 
             private void ObtenerGanadorPorCartas(List<ResultadoDeLaMano> puntajes) 
             {
@@ -579,7 +556,7 @@ namespace JuegoDeCartas
                 return null;
             }
 
-            private static ResultadoDeLaMano Trio(List<ICarta> cartas)
+            private ResultadoDeLaMano Trio(List<ICarta> cartas)
             {
 
                 var trio = cartas.GroupBy(c => c.Valor).Where(g => g.Count() == 2).SelectMany(g => g).ToList();
@@ -593,7 +570,7 @@ namespace JuegoDeCartas
             }
 
 
-            private static ResultadoDeLaMano Poker(List<ICarta> cartas)
+            private  ResultadoDeLaMano Poker(List<ICarta> cartas)
             {
                 var poker = cartas.GroupBy(c => c.Valor).Where(g => g.Count() == 4).SelectMany(g => g).ToList();
                 var cartasQueNoSonPoker = cartas.Except(poker).OrderByDescending(c => c.Valor).ToList();
@@ -606,17 +583,49 @@ namespace JuegoDeCartas
             }
 
 
-            private static ResultadoDeLaMano ObtenerColor(List<ICarta> cartas)
+            private  ResultadoDeLaMano Color(List<ICarta> cartas)
             {
                 // Se seleccionan las cartas que tienen el mismo palo
-                var cartasDeMismaFigura = cartas.GroupBy(c => c.Figura) .Where(g => g.Count() >= 5) .SelectMany(g => g) .OrderByDescending(c => c.Valor).ToList();
+                var cartasConLaFigura = cartas.GroupBy(c => c.Figura) .Where(g => g.Count() >= 5) .SelectMany(g => g) .OrderByDescending(c => c.Valor).ToList();
 
-                // Los Ases pueden ser tanto la carta más alta como la más baja, por lo que se debe
-                // mover cada As al principio de la lista
-                cartasDeMismaFigura = MoverAsAlPrincipio(cartasDeMismaFigura);
+                cartasConLaFigura = MoverAsAlPrincipio(cartasConLaFigura); //Se mueve el As al principio dependeindo del valor que tenga 
 
-                // Si las cartas son de tipo color, se retorna el resultado de la mano con el tipo de mano Color
-                return cartasDeMismaFigura.Count >= 5 ? new ResultadoDeLaMano(ManoEnum.Color, cartasDeMismaFigura) : null;
+                return cartasConLaFigura.Count >= 5 ? new ResultadoDeLaMano(ManoEnum.Color, cartasConLaFigura) : null; // si es Color, lo que se retorna es la mano de Color 
+            }
+
+
+            private ResultadoDeLaMano DoblePareja(List<ICarta> cartas)
+            {
+                var parejas = cartas.GroupBy(c => c.Valor).Where(g => g.Count() == 2).SelectMany(g => g).ToList();
+                parejas.OrderByDescending(c => c.Valor);
+                parejas = MoverAsAlPrincipio(parejas);
+
+                var cartasOrdenadas = parejas.Concat(cartas.Except(parejas).OrderByDescending(c => c.Valor).ToList());
+
+                return parejas.Count == 4 ? new ResultadoDeLaMano(ManoEnum.DoblePar, cartasOrdenadas) : null;
+            }
+
+            private List<ICarta> MoverAsAlPrincipio(List<ICarta> cartas)
+            {
+                var cartasOrdenadas = cartas.OrderByDescending(c => c.Valor).ToList();
+                var listaDeAses = new List<ICarta>();
+                var listaSinAses = new List<ICarta>();
+
+                for (int i = 0; i <= cartasOrdenadas.Count - 1; i++)
+                {
+                    if (cartasOrdenadas[i].Valor == ValoresCartasEnum.As)
+                    {
+                        listaDeAses.Add(cartasOrdenadas[i]);
+                    }
+                    else
+                    {
+                        listaSinAses.Add(cartasOrdenadas[i]);
+                    }
+                }
+
+                var listaFinal = listaDeAses.Concat(listaDeAses).ToList();
+
+                return listaFinal;
             }
 
 
