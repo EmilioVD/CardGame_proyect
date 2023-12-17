@@ -281,65 +281,7 @@ namespace JuegoDeCartas
 
         }
         public class JuegoDePoker : IJuego
-        {
-            //private List<IJugador> jugadores;
-            //private IDealer dealer;
-            //private IDeckDeCartas deck;
-
-            //public Juego(IDealer dealer, IDeckDeCartas deck)
-            //{
-            //    this.jugadores = new List<IJugador>();
-            //    this.dealer = dealer;
-            //    this.deck = deck;
-            //}
-
-            //public IDealer Dealer => dealer;
-            //public bool JuegoTerminado { get; private set; }
-
-            //public void AgregarJugador(IJugador jugador)
-            //{
-            //    jugadores.Add(jugador);
-            //}
-
-            //public void IniciarJuego()
-            //{
-            //    // implementar logica
-            //}
-
-            //public void JugarRonda()
-            //{
-            //    // implementar logica
-            //}
-
-            //public void MostrarGanador()
-            //{
-            //    // implementar logica
-            //}
-            //public static void MostrarEstado(List<IJugador> jugadores)
-            //{
-            //    Console.WriteLine("Estado del juego:");
-
-
-            //    for (int i = 0; i < jugadores.Count; i++)
-            //    {
-            //        Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
-            //    }
-
-
-            //}
-
-            //public static void MostrarManosFinales(List<IJugador> jugadores)
-            //{
-            //    Console.WriteLine("Manos finales:");
-
-
-            //    for (int i = 0; i < jugadores.Count; i++)
-            //    {
-            //        Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
-            //    }
-
-
-            //}
+        { 
 
             private List<IJugador> jugadores;
             private IDealer dealer;
@@ -369,7 +311,7 @@ namespace JuegoDeCartas
                     Cartas = cartas;
                 }
             }
-            public Juego(IDealer dealer, IDeckDeCartas deck)
+            public JuegoDePoker(IDealer dealer, IDeckDeCartas deck)
             {
                 this.jugadores = new List<IJugador>();
                 this.dealer = dealer;
@@ -478,7 +420,7 @@ namespace JuegoDeCartas
 
             }
 
-            private static ResultadoDeLaMano EscaleraReal(List<ICarta> cartas)
+            private  ResultadoDeLaMano EscaleraReal(List<ICarta> cartas)
             {
                 var escaleraDeColor = EscaleraColor(cartas);
 
@@ -494,13 +436,13 @@ namespace JuegoDeCartas
                 return null;
             }
 
-            private static ResultadoDeLaMano EscaleraColor(List<ICarta> cartas)
+            private ResultadoDeLaMano EscaleraColor(List<ICarta> cartas)
             {
                 var escalera = Escalera(cartas);
 
                 if (escalera != null)
                 {
-                    var color = ObtenerColor(cartas); //Si es Escalera de color, se retormna los resultados de la Escalera de color 
+                    var color = Color(cartas); //Si es Escalera de color, se retormna los resultados de la Escalera de color 
 
                     if (color != null)
                     {
@@ -562,7 +504,7 @@ namespace JuegoDeCartas
             private ResultadoDeLaMano Trio(List<ICarta> cartas)
             {
 
-                var trio = cartas.GroupBy(c => c.Valor).Where(g => g.Count() == 2).SelectMany(g => g).ToList();
+                var trio = cartas.GroupBy(c => c.Valor).Where(g => g.Count() == 2).SelectMany(g => g).ToList(); //Aqui se elijen las cartas que son  trio y se ponen al frente de la lista, se agrupan las cartas por su valor corresponeidnte, las que se repiyten 3 veces y se conviente en lista 
 
                 var cartasQueNoSonTrio = cartas.Except(trio).OrderByDescending(c => c.Valor).ToList();
 
@@ -575,7 +517,7 @@ namespace JuegoDeCartas
 
             private  ResultadoDeLaMano Poker(List<ICarta> cartas)
             {
-                var poker = cartas.GroupBy(c => c.Valor).Where(g => g.Count() == 4).SelectMany(g => g).ToList();
+                var poker = cartas.GroupBy(c => c.Valor).Where(g => g.Count() == 4).SelectMany(g => g).ToList(); //Aqui se elijen las cartas que son poker y se ponen al frente de la lista, se agrupan las cartas po su valor corresponeidnte, las que se repiyten 4 veces y se conviente en lista 
                 var cartasQueNoSonPoker = cartas.Except(poker).OrderByDescending(c => c.Valor).ToList();
                 cartasQueNoSonPoker = MoverAsAlPrincipio(cartasQueNoSonPoker);
 
@@ -606,6 +548,27 @@ namespace JuegoDeCartas
                 var cartasOrdenadas = parejas.Concat(cartas.Except(parejas).OrderByDescending(c => c.Valor).ToList());
 
                 return parejas.Count == 4 ? new ResultadoDeLaMano(ManoEnum.DoblePar, cartasOrdenadas) : null;
+            }
+
+            private ResultadoDeLaMano Pareja(List<ICarta> cartas)
+            {
+                var pareja = cartas.GroupBy(c => c.Valor).Where(g => g.Count() == 2).SelectMany(g => g).ToList(); //Aqui se elijen las cartas que son parejas y se ponen al frente de la lista, se agrupan las cartas po su valor corresponeidnte, las que se repiyten 2 veces y se conviente en lista 
+                var cartasQueNoSonPareja = cartas.Except(pareja).OrderByDescending(c => c.Valor).ToList();
+                cartasQueNoSonPareja = MoverAsAlPrincipio(cartasQueNoSonPareja);
+
+                var cartasOrdenadas = pareja.Concat(cartasQueNoSonPareja).ToList();
+
+                return pareja.Count == 2 ? new ResultadoDeLaMano(ManoEnum.Par, cartasOrdenadas) : null; // si es Pareja, lo que se retorna es el mano Par
+
+            }
+
+            private ResultadoDeLaMano CartaAlta(List<ICarta> cartas)
+            {
+                var cartasOrdenadas = cartas.OrderByDescending(c => c.Valor).ToList();
+
+                cartasOrdenadas = MoverAsAlPrincipio(cartasOrdenadas); //Se mueve el As al inicio
+
+                return new ResultadoDeLaMano(ManoEnum.CartaAlta, cartasOrdenadas);  // Aquise retorna el puntaje de la primera carta de las cartas ordenas ahora tendiendo el valor mas alto
             }
 
             private List<ICarta> MoverAsAlPrincipio(List<ICarta> cartas)
