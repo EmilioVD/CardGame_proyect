@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JuegoDeCartas.Interfaces;
 using JuegoDeCartas.Enumeradores;
+using static JuegoDeCartas.Program;
 
 
 namespace JuegoDeCartas
@@ -35,16 +36,24 @@ namespace JuegoDeCartas
                 jugadores.Add(new Jugador());
             }
 
+
+            // Agregar jugadores al juego
+            IJuego juego = new Juego(new Dealer(), new DeckDeCartas());
             foreach (var jugador in jugadores)
             {
-                Console.WriteLine($"Mano del Jugador: {string.Join(", ", jugador.MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
+                juego.AgregarJugador(jugador);
+            }
+            // Enumerar jugadores
+            Console.WriteLine("Jugadores en la partida:");
+            for (int i = 0; i < jugadores.Count; i++)
+            {
+                Console.WriteLine($"Jugador {i + 1}: {string.Join(", ", jugadores[i].MostrarCartas().Select(carta => $"{carta.Figura} {carta.Valor}"))}");
             }
 
             // Crear dealer
             IDealer dealer = new Dealer();
 
             Console.WriteLine("Comienza el juego...");
-
             // Crear el deck según el tipo de juego seleccionado
             IDeckDeCartas deck = new DeckDeCartas(opcionJuego);
             deck.BarajearDeck();
@@ -53,17 +62,16 @@ namespace JuegoDeCartas
             RepartirCartasIniciales(jugadores, dealer, deck);
 
             // Mostrar estado inicial
-            MostrarEstado(jugadores);
+            Juego.MostrarEstado(jugadores);
 
             // Jugadores devuelven cartas y reciben nuevas
             foreach (var jugador in jugadores)
             {
                 DevolverYRecibirCartas(jugador, deck);
-                MostrarEstado(jugadores);
+                Juego.MostrarEstado(jugadores);
             }
-
             // Mostrar manos finales y determinar ganador
-            MostrarManosFinales(jugadores);
+            Juego.MostrarManosFinales(jugadores);
             DeterminarGanador(jugadores);
 
             Console.WriteLine("Fin del juego. ¡Gracias por jugar!");
