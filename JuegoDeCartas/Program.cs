@@ -316,10 +316,92 @@ namespace JuegoDeCartas
 
         //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        //public class JuegoDeBlackJack : IJuego
-        //{
+      public class JuegoDeBlackjack : IJuego
+        {
+            private List<IJugador> jugadores;
+            private IDeckDeCartas deck;
+            public bool JuegoTerminado { get; private set; } = false;
 
-        //}
+            private IDealer dealer;
+
+            public IDealer GetDealer()
+            {
+                return dealer;
+            }
+
+            private void SetDealer(IDealer value)
+            {
+                dealer = value;
+            }
+
+            public JuegoDeBlackjack(IDealer dealer, IDeckDeCartas deck)
+            {
+                this.jugadores = new List<IJugador>();
+                this.dealer = dealer;
+                this.deck = deck;
+
+                // Inicializar el mazo (puedes ajustar esto según tus necesidades)
+                deck.InicializarDeck(0); // 0 podría indicar blackjack, ajusta según sea necesario
+            }
+
+            public void AgregarJugador(IJugador jugador)
+            {
+                jugadores.Add(jugador);
+            }
+
+            public void IniciarJuego()
+            {
+                foreach (var jugador in jugadores)
+                {
+                    List<ICarta> cartasRepartidas = new List<ICarta>();
+
+                    // RepartirCartas devuelve 5 cartas por jugador
+                    for (int i = 0; i < 5; i++)
+                    {
+                        cartasRepartidas.Add(deck.SacarCarta(0)); // Suponiendo que 0 representa la parte superior del mazo
+                    }
+
+                    jugador.ObtenerCartas(cartasRepartidas);
+                }
+
+            }
+
+            public void JugarRonda()
+            {
+                foreach (var jugador in jugadores)
+                {
+                    jugador.RealizarJugada();
+                }
+
+                foreach (var jugador in jugadores)
+                {
+                    jugador.MostrarCartas();
+                }
+
+                MostrarGanador();
+            }
+
+            public void MostrarGanador()
+            {
+                List<IJugador> ganadores = new List<IJugador>();
+                int puntuacionGanadora = 0;
+
+                foreach (var jugador in jugadores)
+                {
+                    int puntuacionJugador = CalcularPuntuación(jugador.DevolverTodasLasCartas());
+
+                    if (puntuacionJugador > puntuacionGanadora && puntuacionJugador <= 21)
+                    {
+                        puntuacionGanadora = puntuacionJugador; 
+                    }
+                }
+            }
+
+            private int CalcularPuntuación(List<ICarta> cartas)
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public class JuegoDePoker : IJuego
@@ -855,7 +937,7 @@ namespace JuegoDeCartas
 
             }
 
-            private int CalcularPuntuacion()
+            public int CalcularPuntuacion()
             {
                 int puntuacion = 0;
                 int ases = 0;
