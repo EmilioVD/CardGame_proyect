@@ -34,7 +34,7 @@ namespace JuegoDeCartas
             }
 
             // Crear el dealer y el juego según el juego seleccionado
-            IDealer dealer;
+            IDealer dealer ;
             IJuego juego;
             IDeckDeCartas deck = new DeckDeCartas();
 
@@ -197,7 +197,7 @@ namespace JuegoDeCartas
 
         //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        public class JuegoDeBlackJack : IJuego
+        public class JuegoDeBlasckJack : IJuego
         {
 
         }
